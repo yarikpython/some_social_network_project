@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+{% if current_user.new_requests() %}
+    <div class="row justify-content-center">
+        <div class="col-8  ">
+            <h3 class="text-secondary col-8 mb-0">New Friend Requests</h3>
+            <hr>
+            {% for request in all_new_requests %}
+                <article class="media content-section ml-3">
+                      <img class="rounded account-img mr-5" height="125" width="125" src="/static/profile_pics/{{ request.sender.profile_img }}">
+                      <div class="media-body">
+                        {% if request.sender.online %}
+                            <p class="float-right text-secondary mr-4">online</p>
+                        {% endif %}
+                        <h3><a class="account-heading" href="{{ url_for('user_page', user_id=request.sender.id) }}">{{ request.sender.username }}</a></h3>
+                        <p class="text-secondary mb-4 ml-1">{{ request.sender.email }}</p>
+                        <a href="{{ url_for('add_to_friends', user_id=request.sender.id) }}" class="btn btn-outline-success btn-sm">Add To Friends</a>
+                        <a href="{{ url_for('leave_in_followers', user_id=request.sender.id) }}" class="btn btn-outline-info btn-sm">Leave In Followers</a>
+                      </div>
+                </article>
+                <hr>
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+<div class="row">
+    <h3 class="text-secondary col-8 mb-0 ml-3"><a style="color: #aaa" href="{{ url_for('friends', user_id=current_user.id) }}">Friends</a></h3>
+    <form method="POST" class="form-group col mb-0">
+        {{ form.hidden_tag() }}
+        <div class="row">
+        <div class="form-group col-8 mb-0 mr-0">
+            {% if form.target.errors %}
+                {{ form.target(class='form-control is-invalid') }}
+                <div class="invalid-feedback">
+                    {% for error in form.target.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.target(class='form-control')}}
+            {% endif %}
+        </div>
+        <div class="form-group col-4 mb-0 mr-0">
+            {{ form.submit(class='btn btn-outline-info') }}
+        </div>
+        </div>
+    </form>
+</div>
+<hr>
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+    {% for friend in friends %}
+        <article class="media content-section ml-3">
+              <img class="rounded- account-img mr-5" height="125" width="125" src="/static/profile_pics/{{ friend.profile_img }}">
+              <div class="media-body">
+                {% if friend.online %}
+                    <p class="float-right text-secondary mr-4">online</p>
+                {% endif %}
+                <h2><a class="account-heading" href="{{ url_for('user_page', user_id=friend.id) }}">{{ friend.username }}</a></h2>
+                <p class="text-secondary">{{ friend.email }}</p>
+                <a href="{{ url_for('remove_for_friends', friend_id=friend.id)}}" class="btn btn-outline-danger btn-sm">Remove From Friends</a>
+              </div>
+        </article>
+        <hr>
+    {% endfor %}
+    </div>
+</div>
+{% endif%}
+{% endblock %}

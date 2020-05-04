@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <br>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="media-body">
+                <form action="" method="POST">
+                    {{ form.hidden_tag() }}
+                    <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">New Message to {{ recipient.username }}</legend>
+                        <div class="form-group">
+                            {{ form.body.label(class='form-control-label') }}
+                            {% if form.body.errors %}
+                                {{ form.body(class='form-control is-invalid') }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.body.errors %}
+                                        <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.body(class='form-control')}}
+                            {% endif %}
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        {{ form.submit(class='btn btn-outline-info') }}
+                    </div>
+                </form>
+                <hr>
+             </div>
+        </div>
+    </div>
+
+{% endblock %}

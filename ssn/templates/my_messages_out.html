@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<div class="row">
+    <h3 class="text-secondary col-8 mb-0 ml-3">
+        My Messages
+        <a style="color: #aaa" href="{{ url_for('messages', recipient_id=current_user.id) }}"> (In /</a>
+        <a style="color: #aaa" href="{{ url_for('messages_out', sender_id=current_user.id) }}">Out)</a>
+    </h3>
+    <form method="POST" class="form-group col mb-0">
+        {{ form.hidden_tag() }}
+        <div class="row">
+        <div class="form-group col-8 mb-0 mr-0">
+            {% if form.target.errors %}
+                {{ form.target(class='form-control is-invalid') }}
+                <div class="invalid-feedback">
+                    {% for error in form.target.errors %}
+                        <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.target(class='form-control')}}
+            {% endif %}
+        </div>
+        <div class="form-group col-4 mb-0 mr-0">
+            {{ form.submit(class='btn btn-outline-info') }}
+        </div>
+        </div>
+    </form>
+</div>
+<hr>
+<div class="row">
+
+    <div class="col ml-3">
+    {% for message in my_messages %}
+        <div class="row">
+            <div class="col-2">
+              <img class="rounded- account-img mr-5" height="125" width="125" src="/static/profile_pics/{{ message.sender.profile_img }}">
+            </div>
+
+
+
+            <div class="col-10">
+                {% if message.recipient.online %}
+                    <p class="float-right text-secondary mr-4">online</p>
+                {% endif %}
+                <h5>
+                    <small class="text-secondary">to</small>
+                    <a class="account-heading" href="{{ url_for('user_page', user_id=message.sender.id) }}">{{ message.recipient.username }}</a>
+                    <small class="text-secondary"> on {{ message.date.strftime('%d.%m.%Y %H:%M:%S') }}</small>
+                </h5>
+
+
+                <p>{{ message.body }}</p>
+                <a href="{{ url_for('delete_message', message_id=message.id) }}" class="btn btn-outline-danger btn-sm">Delete</a>
+            </div>
+
+        </div>
+        <hr>
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
